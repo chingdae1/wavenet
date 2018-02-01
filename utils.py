@@ -3,6 +3,7 @@ import struct
 import wave
 import numpy as np
 from glob import glob
+from keras.preprocessing.sequence import pad_sequences
 
 def load_audio(file_path):
     # Read raw wave file.
@@ -49,8 +50,6 @@ def load_data(file_path, dim=256):
     return one_hot
 
 def train_generator(train_batch_size, input_dim):
-    data_dir = '../data/VCTK-Corpus/'
-
     # VCTK -> 44257 files
     all_files = glob(os.path.join(data_dir, 'wav48/*/*wav'))
 
@@ -58,24 +57,24 @@ def train_generator(train_batch_size, input_dim):
 
     sample = './data/sample.wav'
 
-    # batch size more than 1 -> fail
+
     # while True:
-    # for start_idx in range(0, len(all_files), train_batch_size):
-    #     x_batch, y_batch = [], []
-    #     for idx in range(start_idx, start_idx + train_batch_size):
-    #         if idx > len(all_files) - 1:
-    #             break
-    #         audio_one_hot = load_data(all_files[idx])
-    #
-    #         audio_one_hot = np.reshape(audio_one_hot, (train_batch_size, -1, input_dim))
-    #         print(np.shape(audio_one_hot))
-    #         _in = audio_one_hot[:, :-1, :]
-    #         _out = audio_one_hot[:, 1:, :]
-    #
-    #         x_batch.append(_in)
-    #         y_batch.append(_out)
-    #
-    #     yield x_batch, y_batch
+    for start_idx in range(0, len(all_files), train_batch_size):
+        x_batch, y_batch = [], []
+        for idx in range(start_idx, start_idx + train_batch_size):
+            if idx > len(all_files) - 1:
+                break
+            audio_one_hot = load_data(all_files[idx])
+
+            audio_one_hot = np.reshape(audio_one_hot, (train_batch_size, -1, input_dim))
+            print(np.shape(audio_one_hot))
+            _in = audio_one_hot[:, :-1, :]
+            _out = audio_one_hot[:, 1:, :]
+
+            x_batch.append(_in)
+            y_batch.append(_out)
+
+        yield x_batch, y_batch
 
 
     # for idx in range(len(all_files)):
@@ -90,18 +89,36 @@ def train_generator(train_batch_size, input_dim):
     #     print(x_batch)
     #
         # yield x_batch, y_batch
-    while True:
-        x_batch, y_batch = [], []
-        audio_one_hot = load_data(sample)
-        audio_one_hot = np.reshape(audio_one_hot, (train_batch_size, -1, input_dim))
-        _in = audio_one_hot[:, :-1, :]
-        _out = audio_one_hot[:, 1:, :]
 
-        x_batch.append(_in)
-        y_batch.append(_out)
+def save_wav_to_arr(data_dir):
+    # VCTK -> 44257 files
+    all_files = glob(os.path.join(data_dir, 'wav48/*/*wav'))
 
+    # For test, get sample
+    # all_files = glob(os.path.join(data_dir, '*wav'))
 
-        # yield x_batch, y_batch
+    output_dir = './audio_vector/'
+    one_hot_list = []
+    file_name_list = []
+
+    for file in all_files:
+        file_name = file.split('/')
+        file_name = file_name[-1].replace('.wav', '')
+        one_hot = load_data(file)
+        one_hot_list.append(one_hot)
+        file_name_list.append(file_name)
+        print('load_data complete : ' + file_name)
+
+    one_hot_list = pad_sequences(one_hot_list, padding='pre')
+    print('pad_sequence completed')
+    i = 0
+
+    for one_hot in one_hot_list:
+        np.save(output_dir + file_name_list[i], one_hot)
+        print('save file : ' + file_name_list[i])
+        i = i + 1
+
 if __name__ == '__main__':
-    train_generator(1, 256)
-    print('hi')
+    data_dir = '../data/VCTK-Corpus/'
+    save_wav_to_arr(data_dir)
+
