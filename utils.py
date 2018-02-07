@@ -4,6 +4,8 @@ import wave
 import numpy as np
 from glob import glob
 from keras.preprocessing.sequence import pad_sequences
+import librosa
+
 
 def load_audio(file_path):
     # Read raw wave file.
@@ -118,7 +120,16 @@ def save_wav_to_arr(data_dir):
         print('save file : ' + file_name_list[i])
         i = i + 1
 
+def downsampling(data_dir, file_name, downsample_output_dir):
+    y, sr = librosa.load(data_dir+file_name, sr=16000)
+    librosa.output.write_wav(downsample_output_dir+file_name, y, sr)
+
+
+
 if __name__ == '__main__':
     data_dir = '../data/VCTK-Corpus/'
-    save_wav_to_arr(data_dir)
-
+    # save_wav_to_arr(data_dir)
+    sample = './data/'
+    file_name = 'p227_001.wav'
+    downsample_output_dir = './data_downsampling/'
+    downsampling(sample, file_name, downsample_output_dir)
