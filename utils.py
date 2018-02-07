@@ -112,7 +112,6 @@ def save_wav_to_arr(data_dir):
         print('load_data complete : ' + file_name)
 
     one_hot_list = pad_sequences(one_hot_list, padding='pre')
-    print('pad_sequence completed')
     i = 0
 
     for one_hot in one_hot_list:
@@ -124,12 +123,15 @@ def downsampling(data_dir, file_name, downsample_output_dir):
     y, sr = librosa.load(data_dir+file_name, sr=16000)
     librosa.output.write_wav(downsample_output_dir+file_name, y, sr)
 
-
-
 if __name__ == '__main__':
-    data_dir = '../data/VCTK-Corpus/'
+    data_dir = '../VCTK-Corpus/'
     # save_wav_to_arr(data_dir)
-    sample = './data/'
-    file_name = 'p227_001.wav'
+    # sample = './data/'
+    # file_name = 'p227_001.wav'
     downsample_output_dir = './data_downsampling/'
-    downsampling(sample, file_name, downsample_output_dir)
+
+    all_files = glob(os.path.join(data_dir, 'wav48/*/*wav'))
+    for file in all_files:
+        file_name = file.split('/')[-1]
+        downsampling(data_dir, file_name, downsample_output_dir)
+        print('downsampling complete : ' + file)
