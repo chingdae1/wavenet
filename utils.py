@@ -5,9 +5,11 @@ import numpy as np
 from glob import glob
 from keras.preprocessing.sequence import pad_sequences
 import librosa
-
+from scipy.io import wavfile
 
 def load_audio(file_path):
+    '''
+    # original version : cannot load down sampled data
     # Read raw wave file.
     raw = wave.open(file_path, 'rb')
     # Get number of channels.
@@ -17,8 +19,12 @@ def load_audio(file_path):
     # Convert binary chunks to floats(amplitude).
     frames = struct.unpack("%ih" % (raw.getnframes() * nchannels), raw_frames)
     frames = [float(val) / pow(2, 15) for val in frames]
+    '''
 
-    return frames
+    sr, data = wavfile.read(file_path)
+    data = data.tolist()
+
+    return data
 
 def mu_quantize(frames, dim):
     # Set mu. Dimension might be 256.
@@ -130,6 +136,9 @@ def downsampling(data_dir, file_name, downsample_output_dir):
 
 if __name__ == '__main__':
     data_dir = '../down_VCTK/'
+
+    # data_dir = './data_downsampling/'
+
     # save_wav_to_arr(data_dir)
     # sample = './data/'
     # file_name = 'p227_001.wav'
@@ -153,4 +162,7 @@ TODO list
 train 하는 동안 generation 코드 작성
 
 다 되면 generate!
+
+아 근데 그럼 나중에 컨디션 줘서 학습시킬때 지금 pad_sequence 에 max_len 때문에
+오디오 잘리는거 주의해줘야 되겠구나
 '''
