@@ -55,6 +55,8 @@ def load_data(file_path, dim=256):
     mu_q = mu_quantize(frames, dim)
     one_hot = q_to_one_hot(mu_q, dim)
 
+    one_hot = one_hot.astype(np.uint8)
+
     return one_hot
 
 def train_generator(train_batch_size, input_dim):
@@ -98,6 +100,17 @@ def train_generator(train_batch_size, input_dim):
     #
         # yield x_batch, y_batch
 
+def load_generator(all_files):
+    for file in all_files:
+        one_hot_list = []
+        file_name = file.split('/')
+        file_name = file_name[-1].replace('.wav', '')
+        one_hot = load_data(file)
+        one_hot_list.append(one_hot)
+        one_hot_list = pad_sequences(one_hot_list, maxlen=100000, padding='pre')
+
+        yield file_name, one_hot_list[0]
+
 def save_wav_to_arr(data_dir):
     # VCTK -> 44257 files
     all_files = glob(os.path.join(data_dir, '*wav'))
@@ -106,27 +119,10 @@ def save_wav_to_arr(data_dir):
     # all_files = glob(os.path.join('./data/', '*wav'))
 
     output_dir = '../VCTK_audio_vector/'
-    one_hot_list = []
-    file_name_list = []
 
-    for file in all_files:
-        file_name = file.split('/')
-        file_name = file_name[-1].replace('.wav', '')
-        one_hot = load_data(file)
-        one_hot_list.append(one_hot)
-        file_name_list.append(file_name)
-        print('load_data complete : ' + file_name)
-
-
-    print('pad_sequences start.')
-    one_hot_list = pad_sequences(one_hot_list, maxlen=300000, padding='pre')
-    i = 0
-    print('pad_sequences end.')
-
-    for one_hot in one_hot_list:
-        np.save(output_dir + file_name_list[i], one_hot)
-        print('save file : ' + file_name_list[i])
-        i = i + 1
+    for file_name, one_hot in load_generator(all_files):
+        np.save(output_dir + file_name, one_hot)
+        print('save file : ' + file_name)
 
     print('save_wav_to_arr done.')
 
