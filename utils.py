@@ -69,22 +69,22 @@ def train_generator(train_batch_size, input_dim):
 
 
     # while True:
-    for start_idx in range(0, len(all_files), train_batch_size):
-        x_batch, y_batch = [], []
-        for idx in range(start_idx, start_idx + train_batch_size):
-            if idx > len(all_files) - 1:
-                break
-            audio_one_hot = load_data(all_files[idx])
-
-            audio_one_hot = np.reshape(audio_one_hot, (train_batch_size, -1, input_dim))
-            print(np.shape(audio_one_hot))
-            _in = audio_one_hot[:, :-1, :]
-            _out = audio_one_hot[:, 1:, :]
-
-            x_batch.append(_in)
-            y_batch.append(_out)
-
-        yield x_batch, y_batch
+    # for start_idx in range(0, len(all_files), train_batch_size):
+    #     x_batch, y_batch = [], []
+    #     for idx in range(start_idx, start_idx + train_batch_size):
+    #         if idx > len(all_files) - 1:
+    #             break
+    #         audio_one_hot = load_data(all_files[idx])
+    #
+    #         audio_one_hot = np.reshape(audio_one_hot, (train_batch_size, -1, input_dim))
+    #         print(np.shape(audio_one_hot))
+    #         _in = audio_one_hot[:, :-1, :]
+    #         _out = audio_one_hot[:, 1:, :]
+    #
+    #         x_batch.append(_in)
+    #         y_batch.append(_out)
+    #
+    #     yield x_batch, y_batch
 
 
     # for idx in range(len(all_files)):
@@ -102,14 +102,19 @@ def train_generator(train_batch_size, input_dim):
 
 def load_generator(all_files):
     for file in all_files:
-        one_hot_list = []
+        # one_hot_list = []
         file_name = file.split('/')
         file_name = file_name[-1].replace('.wav', '')
-        one_hot = load_data(file)
-        one_hot_list.append(one_hot)
-        one_hot_list = pad_sequences(one_hot_list, maxlen=100000, padding='pre')
 
-        yield file_name, one_hot_list[0]
+        # one_hot = load_data(file)
+        # one_hot_list.append(one_hot)
+        # one_hot_list = pad_sequences(one_hot_list, maxlen=100000, padding='pre')
+
+        frames = load_audio(file)
+        mu_q = mu_quantize(frames, 256)
+        mu_q = np.asarray(mu_q)
+
+        yield file_name, mu_q
 
 def save_wav_to_arr(data_dir):
     # VCTK -> 44257 files
@@ -120,8 +125,8 @@ def save_wav_to_arr(data_dir):
 
     output_dir = '../VCTK_audio_vector/'
 
-    for file_name, one_hot in load_generator(all_files):
-        np.save(output_dir + file_name, one_hot)
+    for file_name, audio_vector in load_generator(all_files):
+        np.save(output_dir + file_name, audio_vector)
         print('save file : ' + file_name)
 
     print('save_wav_to_arr done.')
