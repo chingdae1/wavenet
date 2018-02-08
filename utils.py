@@ -38,6 +38,8 @@ def mu_quantize(frames, dim):
         log_part = np.log(1 + mu * np.absolute(x)) / np.log(1 + mu)
         f_x = sign_x * log_part
         quantized = int((f_x + 1) / (2 / mu))
+        if quantized > 255:
+            quantized = 255
         quantized_frames.append(quantized)
 
     return quantized_frames
@@ -68,6 +70,7 @@ def train_generator(train_batch_size, input_dim, data_dir, sample_len):
         for start_idx in range(0, len(all_files), train_batch_size):
             x_batch, y_batch = [], []
             for idx in range(start_idx, start_idx + train_batch_size):
+                print('t.g!')
                 if idx > len(all_files) - 1:
                     idx = random.randrange(0, len(all_files))
                 audio_vector = np.load(all_files[idx])
