@@ -152,8 +152,7 @@ def make_valid_set(data_dir):
         os.system('mv ' + file + ' /home/ubuntu/VCTK_valid_vector')
 
 if __name__ == '__main__':
-    pass
-    # data_dir = '../down_VCTK/'
+    data_dir = '../down_VCTK/'
 
     # data_dir = './data_downsampling/'
 
@@ -168,10 +167,11 @@ if __name__ == '__main__':
     #     downsampling(data_dir, file_name, downsample_output_dir)
     #     print('downsampling complete : ' + file)
 
-    # save_wav_to_arr(data_dir)
+    save_wav_to_arr(data_dir)
+    print('save wav to arr done.')
 
-    # data_dir = '../VCTK_audio_vector/'
-    # make_valid_set(data_dir)
+    data_dir = '../VCTK_audio_vector/'
+    make_valid_set(data_dir)
 
 
 '''
