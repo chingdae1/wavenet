@@ -166,8 +166,8 @@ if __name__ == '__main__':
 
     # save_wav_to_arr(data_dir)
 
-    data_dir = '../VCTK_audio_vector/'
-    make_valid_set(data_dir)
+    # data_dir = '../VCTK_audio_vector/'
+    # make_valid_set(data_dir)
 
 
 '''

@@ -9,8 +9,8 @@ input_dim = 256
 sample_len = 100000
 epoch = 30
 batch_size = 1
-train_step = (39832//batch_size) + 1
-valid_step = (4425// batch_size) + 1
+train_step = (32317//batch_size) + 1
+valid_step = (3590// batch_size) + 1
 dilation_factor = [1,2,4,8,16,32,64,128,256,512,
                    1,2,4,8,16,32,64,128,256,512,
                    1,2,4,8,16,32,64,128,256,512]
