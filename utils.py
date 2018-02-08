@@ -5,11 +5,12 @@ import numpy as np
 from glob import glob
 from keras.preprocessing.sequence import pad_sequences
 import librosa
+import random
 from scipy.io import wavfile
 
 def load_audio(file_path):
     '''
-    # original version : cannot load down sampled data
+    # original version : cannot load down sampled data (wav type issue)
     # Read raw wave file.
     raw = wave.open(file_path, 'rb')
     # Get number of channels.
@@ -59,57 +60,36 @@ def load_data(file_path, dim=256):
 
     return one_hot
 
-def train_generator(train_batch_size, input_dim):
+def train_generator(train_batch_size, input_dim, data_dir):
     # VCTK -> 44257 files
-    all_files = glob(os.path.join(data_dir, 'wav48/*/*wav'))
+    all_files = glob(os.path.join(data_dir, '*npy'))
 
-    # sample.wav
+    while True:
+        for start_idx in range(0, len(all_files), train_batch_size):
+            x_batch, y_batch = [], []
+            for idx in range(start_idx, start_idx + train_batch_size):
+                if idx > len(all_files) - 1:
+                    idx = random.randrange(0, len(all_files))
+                audio_vector = np.load(all_files[idx])
+                audio_vector = audio_vector.tolist()
+                one_hot = q_to_one_hot(audio_vector, input_dim)
+                one_hot = one_hot.astype(np.uint8)
+                _in = one_hot[:-1, :]
+                _out = one_hot[1:, :]
+                x_batch.append(_in)
+                y_batch.append(_out)
 
-    sample = './data/sample.wav'
+            x_batch = pad_sequences(x_batch, maxlen=100000, padding='pre')
+            y_batch = pad_sequences(y_batch, maxlen=100000, padding='pre')
+            x_batch = np.asarray(x_batch)
+            y_batch = np.asarray(y_batch)
 
-
-    # while True:
-    # for start_idx in range(0, len(all_files), train_batch_size):
-    #     x_batch, y_batch = [], []
-    #     for idx in range(start_idx, start_idx + train_batch_size):
-    #         if idx > len(all_files) - 1:
-    #             break
-    #         audio_one_hot = load_data(all_files[idx])
-    #
-    #         audio_one_hot = np.reshape(audio_one_hot, (train_batch_size, -1, input_dim))
-    #         print(np.shape(audio_one_hot))
-    #         _in = audio_one_hot[:, :-1, :]
-    #         _out = audio_one_hot[:, 1:, :]
-    #
-    #         x_batch.append(_in)
-    #         y_batch.append(_out)
-    #
-    #     yield x_batch, y_batch
-
-
-    # for idx in range(len(all_files)):
-    #     x_batch, y_batch = [], []
-    #     audio_one_hot = load_data(all_files[idx])
-    #     audio_one_hot = np.reshape(audio_one_hot, (train_batch_size, -1, input_dim))
-    #     _in = audio_one_hot[:, :-1, :]
-    #     _out = audio_one_hot[:, 1:, :]
-    #
-    #     x_batch.append(_in)
-    #     y_batch.append(_out)
-    #     print(x_batch)
-    #
-        # yield x_batch, y_batch
+            yield x_batch, y_batch
 
 def load_generator(all_files):
     for file in all_files:
-        # one_hot_list = []
         file_name = file.split('/')
         file_name = file_name[-1].replace('.wav', '')
-
-        # one_hot = load_data(file)
-        # one_hot_list.append(one_hot)
-        # one_hot_list = pad_sequences(one_hot_list, maxlen=100000, padding='pre')
-
         frames = load_audio(file)
         mu_q = mu_quantize(frames, 256)
         mu_q = np.asarray(mu_q)
@@ -151,13 +131,20 @@ if __name__ == '__main__':
     #     downsampling(data_dir, file_name, downsample_output_dir)
     #     print('downsampling complete : ' + file)
 
-    save_wav_to_arr(data_dir)
+    # save_wav_to_arr(data_dir)
+
+    g = train_generator()
+
+
 '''
 TODO list
 오디오 다운샘플링 끝나면 save_wav_to_arr 에 파일 경로 같은거 수정해서
-다운샘필링된 놈들 패딩된 넘파이 어레이로 저장 (그전에 패딩 같은거 잘 되는지 확인)
+다운샘필링된 놈들 mu_quantize() 까지만 해줘서 넘파이 어레이로 저장
 
 위의 것들 서버에서 돌리는 동안 train_generator 작성
+- train_generator 에서는 저장된 npy 부르고 one_hot 으로 바꿔준 다음에
+  pad_sequences 해준 다음에 진행해야함
+- tolist() 메쏘드로 바꾸고 q_to_one_hot 에 넣어줘야 함
 
 다 되면 train
 train 하는 동안 generation 코드 작성
