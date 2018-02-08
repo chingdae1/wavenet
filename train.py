@@ -42,7 +42,6 @@ history = model.fit_generator(generator=train_generator(batch_size, input_dim, d
                               callbacks=callbacks,
                               validation_data=valid_generator(batch_size, input_dim, valid_data_dir, sample_len),
                               validation_steps=valid_step,
-                              verbose=2
                               )
 
 # if __name__ == '__main__':
