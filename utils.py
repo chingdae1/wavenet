@@ -71,6 +71,8 @@ def train_generator(train_batch_size, input_dim, data_dir, sample_len):
                 if idx > len(all_files) - 1:
                     idx = random.randrange(0, len(all_files))
                 audio_vector = np.load(all_files[idx])
+                if audio_vector.shape[0] > sample_len:
+                    audio_vector = audio_vector[:sample_len-1]
                 audio_vector = audio_vector.tolist()
                 one_hot = q_to_one_hot(audio_vector, input_dim)
                 one_hot = one_hot.astype(np.uint8)
@@ -97,6 +99,8 @@ def valid_generator(valid_batch_size, input_dim, valid_data_dir, sample_len):
                 if idx > len(all_files) - 1:
                     idx = random.randrange(0, len(all_files))
                 audio_vector = np.load(all_files[idx])
+                if audio_vector.shape[0] > sample_len:
+                    audio_vector = audio_vector[:sample_len-1]
                 audio_vector = audio_vector.tolist()
                 one_hot = q_to_one_hot(audio_vector, input_dim)
                 one_hot = one_hot.astype(np.uint8)
