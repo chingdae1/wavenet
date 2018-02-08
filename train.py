@@ -4,7 +4,7 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 import numpy as np
 
 
-data_dir = '../VCTK_audio_vector/'
+data_dir = './VCTK_audio_vector/'
 input_dim = 256
 sample_len = 100000
 epoch = 30
