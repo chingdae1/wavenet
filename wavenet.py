@@ -29,6 +29,7 @@ def build_model(sample_len, dilation_factor, nb_filters=64, nb_layers=30, input_
     out = Activation('relu')(out)
     out = Conv1D(input_dim, kernel_size=1, activation='relu')(out)
     out = Conv1D(input_dim, kernel_size=1)(out)
+    out = Activation('softmax')(out)
 
     model = Model(audio_in, out)
     model.summary()
