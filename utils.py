@@ -79,12 +79,15 @@ def train_generator(train_batch_size, input_dim, data_dir):
                 x_batch.append(_in)
                 y_batch.append(_out)
 
-            x_batch = pad_sequences(x_batch, maxlen=100000, padding='pre')
-            y_batch = pad_sequences(y_batch, maxlen=100000, padding='pre')
+            x_batch = pad_sequences(x_batch, maxlen=100000, padding='post')
+            y_batch = pad_sequences(y_batch, maxlen=100000, padding='post')
             x_batch = np.asarray(x_batch)
             y_batch = np.asarray(y_batch)
 
             yield x_batch, y_batch
+
+def valid_generator(valid_batch_size, input_dim, data_dir):
+    pass
 
 def load_generator(all_files):
     for file in all_files:
@@ -115,8 +118,15 @@ def downsampling(data_dir, file_name, downsample_output_dir):
     y, sr = librosa.load(data_dir+file_name, sr=16000)
     librosa.output.write_wav(downsample_output_dir+file_name, y, sr)
 
+def make_valid_set(data_dir):
+    all_files = glob(os.path.join(data_dir, '*npy'))
+    all_files = all_files[:len(all_files)//10]
+
+    for file in all_files:
+        os.system('mv ' + file + ' /home/ubuntu/VCTK_valid_vector')
+
 if __name__ == '__main__':
-    data_dir = '../down_VCTK/'
+    # data_dir = '../down_VCTK/'
 
     # data_dir = './data_downsampling/'
 
@@ -133,7 +143,8 @@ if __name__ == '__main__':
 
     # save_wav_to_arr(data_dir)
 
-    g = train_generator()
+    data_dir = '../VCTK_audio_vector/'
+    make_valid_set(data_dir)
 
 
 '''
