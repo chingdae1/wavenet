@@ -86,8 +86,31 @@ def train_generator(train_batch_size, input_dim, data_dir):
 
             yield x_batch, y_batch
 
-def valid_generator(valid_batch_size, input_dim, data_dir):
-    pass
+def valid_generator(valid_batch_size, input_dim, valid_data_dir):
+    # VCTK -> 44257 files
+    all_files = glob(os.path.join(valid_data_dir, '*npy'))
+
+    while True:
+        for start_idx in range(0, len(all_files), valid_batch_size):
+            x_batch, y_batch = [], []
+            for idx in range(start_idx, start_idx + valid_batch_size):
+                if idx > len(all_files) - 1:
+                    idx = random.randrange(0, len(all_files))
+                audio_vector = np.load(all_files[idx])
+                audio_vector = audio_vector.tolist()
+                one_hot = q_to_one_hot(audio_vector, input_dim)
+                one_hot = one_hot.astype(np.uint8)
+                _in = one_hot[:-1, :]
+                _out = one_hot[1:, :]
+                x_batch.append(_in)
+                y_batch.append(_out)
+
+            x_batch = pad_sequences(x_batch, maxlen=100000, padding='post')
+            y_batch = pad_sequences(y_batch, maxlen=100000, padding='post')
+            x_batch = np.asarray(x_batch)
+            y_batch = np.asarray(y_batch)
+
+            yield x_batch, y_batch
 
 def load_generator(all_files):
     for file in all_files:
