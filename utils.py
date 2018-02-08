@@ -149,6 +149,7 @@ def make_valid_set(data_dir):
         os.system('mv ' + file + ' /home/ubuntu/VCTK_valid_vector')
 
 if __name__ == '__main__':
+    pass
     # data_dir = '../down_VCTK/'
 
     # data_dir = './data_downsampling/'

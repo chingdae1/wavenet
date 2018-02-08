@@ -8,7 +8,7 @@ valid_data_dir = '../VCTK_valid_vector/'
 input_dim = 256
 sample_len = 100000
 epoch = 30
-batch_size = 1
+batch_size = 32
 train_step = (32317//batch_size) + 1
 valid_step = (3590// batch_size) + 1
 dilation_factor = [1,2,4,8,16,32,64,128,256,512,
@@ -41,7 +41,8 @@ history = model.fit_generator(generator=train_generator(batch_size, input_dim, d
                               epochs=epoch,
                               callbacks=callbacks,
                               validation_data=valid_generator(batch_size, input_dim, valid_data_dir),
-                              validation_steps=valid_step
+                              validation_steps=valid_step,
+                              verbose=2
                               )
 
 # if __name__ == '__main__':
