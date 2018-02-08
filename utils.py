@@ -60,7 +60,7 @@ def load_data(file_path, dim=256):
 
     return one_hot
 
-def train_generator(train_batch_size, input_dim, data_dir):
+def train_generator(train_batch_size, input_dim, data_dir, sample_len):
     # VCTK -> 44257 files
     all_files = glob(os.path.join(data_dir, '*npy'))
 
@@ -79,14 +79,14 @@ def train_generator(train_batch_size, input_dim, data_dir):
                 x_batch.append(_in)
                 y_batch.append(_out)
 
-            x_batch = pad_sequences(x_batch, maxlen=100000, padding='post')
-            y_batch = pad_sequences(y_batch, maxlen=100000, padding='post')
+            x_batch = pad_sequences(x_batch, maxlen=sample_len, padding='post')
+            y_batch = pad_sequences(y_batch, maxlen=sample_len, padding='post')
             x_batch = np.asarray(x_batch)
             y_batch = np.asarray(y_batch)
 
             yield x_batch, y_batch
 
-def valid_generator(valid_batch_size, input_dim, valid_data_dir):
+def valid_generator(valid_batch_size, input_dim, valid_data_dir, sample_len):
     # VCTK -> 44257 files
     all_files = glob(os.path.join(valid_data_dir, '*npy'))
 
@@ -105,8 +105,8 @@ def valid_generator(valid_batch_size, input_dim, valid_data_dir):
                 x_batch.append(_in)
                 y_batch.append(_out)
 
-            x_batch = pad_sequences(x_batch, maxlen=100000, padding='post')
-            y_batch = pad_sequences(y_batch, maxlen=100000, padding='post')
+            x_batch = pad_sequences(x_batch, maxlen=sample_len, padding='post')
+            y_batch = pad_sequences(y_batch, maxlen=sample_len, padding='post')
             x_batch = np.asarray(x_batch)
             y_batch = np.asarray(y_batch)
 
@@ -125,10 +125,6 @@ def load_generator(all_files):
 def save_wav_to_arr(data_dir):
     # VCTK -> 44257 files
     all_files = glob(os.path.join(data_dir, '*wav'))
-
-    # For test, get sample
-    # all_files = glob(os.path.join('./data/', '*wav'))
-
     output_dir = '../VCTK_audio_vector/'
 
     for file_name, audio_vector in load_generator(all_files):
