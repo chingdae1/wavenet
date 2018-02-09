@@ -70,7 +70,6 @@ def train_generator(train_batch_size, input_dim, data_dir, sample_len):
         for start_idx in range(0, len(all_files), train_batch_size):
             x_batch, y_batch = [], []
             for idx in range(start_idx, start_idx + train_batch_size):
-                print('t.g!')
                 if idx > len(all_files) - 1:
                     idx = random.randrange(0, len(all_files))
                 audio_vector = np.load(all_files[idx])
@@ -172,6 +171,7 @@ if __name__ == '__main__':
 
     data_dir = '../VCTK_audio_vector/'
     make_valid_set(data_dir)
+    print('make valid set done.')
 
 
 '''
