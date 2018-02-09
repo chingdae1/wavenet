@@ -65,8 +65,9 @@ def load_data(file_path, dim=256):
 def train_generator(train_batch_size, input_dim, data_dir, sample_len):
     # VCTK -> 44257 files
     all_files = glob(os.path.join(data_dir, '*npy'))
-    random.shuffle(all_files)
+
     while True:
+        random.shuffle(all_files)
         for start_idx in range(0, len(all_files), train_batch_size):
             x_batch, y_batch = [], []
             for idx in range(start_idx, start_idx + train_batch_size):
@@ -93,8 +94,9 @@ def train_generator(train_batch_size, input_dim, data_dir, sample_len):
 def valid_generator(valid_batch_size, input_dim, valid_data_dir, sample_len):
     # VCTK -> 44257 files
     all_files = glob(os.path.join(valid_data_dir, '*npy'))
-    random.shuffle(all_files)
+
     while True:
+        random.shuffle(all_files)
         for start_idx in range(0, len(all_files), valid_batch_size):
             x_batch, y_batch = [], []
             for idx in range(start_idx, start_idx + valid_batch_size):
