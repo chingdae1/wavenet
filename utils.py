@@ -65,7 +65,7 @@ def load_data(file_path, dim=256):
 def train_generator(train_batch_size, input_dim, data_dir, sample_len):
     # VCTK -> 44257 files
     all_files = glob(os.path.join(data_dir, '*npy'))
-
+    random.shuffle(all_files)
     while True:
         for start_idx in range(0, len(all_files), train_batch_size):
             x_batch, y_batch = [], []
@@ -93,7 +93,7 @@ def train_generator(train_batch_size, input_dim, data_dir, sample_len):
 def valid_generator(valid_batch_size, input_dim, valid_data_dir, sample_len):
     # VCTK -> 44257 files
     all_files = glob(os.path.join(valid_data_dir, '*npy'))
-
+    random.shuffle(all_files)
     while True:
         for start_idx in range(0, len(all_files), valid_batch_size):
             x_batch, y_batch = [], []
@@ -166,12 +166,12 @@ if __name__ == '__main__':
     #     downsampling(data_dir, file_name, downsample_output_dir)
     #     print('downsampling complete : ' + file)
 
-    save_wav_to_arr(data_dir)
-    print('save wav to arr done.')
-
-    data_dir = '../VCTK_audio_vector/'
-    make_valid_set(data_dir)
-    print('make valid set done.')
+    # save_wav_to_arr(data_dir)
+    # print('save wav to arr done.')
+    #
+    # data_dir = '../VCTK_audio_vector/'
+    # make_valid_set(data_dir)
+    # print('make valid set done.')
 
 
 '''
