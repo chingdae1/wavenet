@@ -62,7 +62,7 @@ def load_data(file_path, dim=256):
 
     return one_hot
 
-def train_generator(train_batch_size, input_dim, data_dir, sample_len):
+def train_generator(train_batch_size, input_dim, data_dir, sample_len, sample_offset):
     # VCTK -> 44257 files
     all_files = glob(os.path.join(data_dir, '*npy'))
 
@@ -74,8 +74,8 @@ def train_generator(train_batch_size, input_dim, data_dir, sample_len):
                 if idx > len(all_files) - 1:
                     idx = random.randrange(0, len(all_files))
                 audio_vector = np.load(all_files[idx])
-                if audio_vector.shape[0] > sample_len:
-                    audio_vector = audio_vector[:sample_len]
+                if audio_vector.shape[0] > sample_len + sample_offset:
+                    audio_vector = audio_vector[sample_offset:sample_len]
                 audio_vector = audio_vector.tolist()
                 one_hot = q_to_one_hot(audio_vector, input_dim)
                 one_hot = one_hot.astype(np.uint8)
@@ -91,7 +91,7 @@ def train_generator(train_batch_size, input_dim, data_dir, sample_len):
 
             yield x_batch, y_batch
 
-def valid_generator(valid_batch_size, input_dim, valid_data_dir, sample_len):
+def valid_generator(valid_batch_size, input_dim, valid_data_dir, sample_len, sample_offset):
     # VCTK -> 44257 files
     all_files = glob(os.path.join(valid_data_dir, '*npy'))
 
@@ -103,7 +103,7 @@ def valid_generator(valid_batch_size, input_dim, valid_data_dir, sample_len):
                 if idx > len(all_files) - 1:
                     idx = random.randrange(0, len(all_files))
                 audio_vector = np.load(all_files[idx])
-                if audio_vector.shape[0] > sample_len:
+                if audio_vector.shape[0] > sample_len + sample_offset:
                     audio_vector = audio_vector[:sample_len-1]
                 audio_vector = audio_vector.tolist()
                 one_hot = q_to_one_hot(audio_vector, input_dim)

@@ -6,9 +6,10 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 data_dir = '../VCTK_audio_vector/'
 valid_data_dir = '../VCTK_valid_vector/'
 input_dim = 256
-sample_len = 30000
+sample_len = 70000
+sample_offset = 8000
 epoch = 30
-batch_size = 4
+batch_size = 3
 train_step = (32317//batch_size) + 1
 valid_step = (3590// batch_size) + 1
 dilation_factor = [1,2,4,8,16,32,64,128,256,512,
@@ -36,11 +37,11 @@ callbacks = [EarlyStopping(monitor='val_loss',
                              save_weights_only=True,
                              mode='min')]
 
-history = model.fit_generator(generator=train_generator(batch_size, input_dim, data_dir, sample_len),
+history = model.fit_generator(generator=train_generator(batch_size, input_dim, data_dir, sample_len, sample_offset),
                               steps_per_epoch=train_step,
                               epochs=epoch,
                               callbacks=callbacks,
-                              validation_data=valid_generator(batch_size, input_dim, valid_data_dir, sample_len),
+                              validation_data=valid_generator(batch_size, input_dim, valid_data_dir, sample_len, sample_offset),
                               validation_steps=valid_step,
                               )
 
