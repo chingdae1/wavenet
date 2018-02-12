@@ -9,6 +9,7 @@ sr = 16000
 sec = 2
 sample_len = 30000
 input_dim = 256
+new_wave_name = './generation/30000_51_p227_03'
 audio_file = 'p227_003'
 seed_audio_path = '../VCTK_audio_vector/' + audio_file +'.npy'
 weight_path = './log_and_weight/30000_4_non_offset.hdf5'
@@ -42,12 +43,11 @@ for i in range(generation_step):
     print('generated %ith sample' % (i + 1), end='\r')
 
 # Save generated samples as a flie
-with open('./generation/generated_30000_51.pkl', 'wb') as f:
+with open(new_wave_name+'.pkl', 'wb') as f:
     pickle.dump(generated_sample, f)
 
 # Make an audio file from generated results, generated_{sample_len}_{acc}.wav
-new_wave_name = './generation/generated_30000_51.wav'
 quantized = onehot_to_wave(generated_sample, input_dim)
 quantized = np.asarray(quantized)
-wavfile.write(new_wave_name, sr, quantized)
+wavfile.write(new_wave_name+'.wav', sr, quantized)
 
