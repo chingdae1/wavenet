@@ -10,16 +10,15 @@ sample_len = 30000
 input_dim = 256
 seed_audio_path = '../VCTK_audio_vector/p227_001.npy'
 weight_path = './log_and_weight/30000_4_non_offset.hdf5'
-generation_step = sr * sec
 wavfile = '../down_VCTK/p227_001.wav'
 dilation_factor = [1,2,4,8,16,32,64,128,256,512,
                    1,2,4,8,16,32,64,128,256,512,
                    1,2,4,8,16,32,64,128,256,512]
 
-sample_list = []
 generated_sample = np.load(seed_audio_path)
 generated_sample = generated_sample.tolist()
 generated_sample = q_to_one_hot(generated_sample, input_dim).astype(np.uint8)
+sample_list = []
 sample_list.append(generated_sample)
 sample_list = pad_sequences(sample_list, maxlen=sample_len, padding='pre')
 generated_sample = sample_list[0]
@@ -29,6 +28,7 @@ pred_seed = np.reshape(generated_sample, (-1, input_dim))
 model = build_model(sample_len, dilation_factor)
 model.load_weights(weight_path)
 
+generation_step = sr * sec
 for i in range(generation_step):
     preds = model.predict(np.expand_dims(pred_seed, 0))  # prediction with the model
     sampled = sample(preds[0][-1])  # multinomial sampling

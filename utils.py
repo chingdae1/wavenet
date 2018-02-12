@@ -173,7 +173,7 @@ def make_valid_set(data_dir):
 
 # multinomial sampling for generation
 def sample(preds, temperature=1):
-    log_preds = np.log(preds) / temperature
+    log_preds = np.log(preds+1e-7) / temperature
     exp_preds = np.exp(log_preds)
     normalize_preds = exp_preds / np.sum(exp_preds + 1e-7)
     probas = np.random.multinomial(1, normalize_preds, 1)
