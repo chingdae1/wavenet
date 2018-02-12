@@ -6,7 +6,7 @@ import pickle
 from scipy.io import wavfile
 
 sr = 16000
-sec = 2
+sec = 4
 sample_len = 30000
 input_dim = 256
 new_wave_name = './generation/30000_51_p227_03'
