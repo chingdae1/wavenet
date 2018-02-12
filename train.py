@@ -2,14 +2,13 @@ from utils import train_generator, valid_generator
 from wavenet import build_model
 from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 
-
 data_dir = '../VCTK_audio_vector/'
 valid_data_dir = '../VCTK_valid_vector/'
 input_dim = 256
 sample_len = 30000
 default_offset = 5000
 epoch = 30
-batch_size = 8
+batch_size = 7
 train_step = (39832//batch_size) + 1
 valid_step = (4425// batch_size) + 1
 dilation_factor = [1,2,4,8,16,32,64,128,256,512,
