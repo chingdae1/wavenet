@@ -62,20 +62,27 @@ def load_data(file_path, dim=256):
 
     return one_hot
 
-def train_generator(train_batch_size, input_dim, data_dir, sample_len, sample_offset):
+def train_generator(train_batch_size, input_dim, data_dir, sample_len, default_offset):
     # VCTK -> 44257 files
     all_files = glob(os.path.join(data_dir, '*npy'))
-
+    iteration = 0
     while True:
         random.shuffle(all_files)
+        print('shuffle all_files..')
+        iteration += 1
+        sample_offset = 0.5 * iteration * sample_len
         for start_idx in range(0, len(all_files), train_batch_size):
             x_batch, y_batch = [], []
             for idx in range(start_idx, start_idx + train_batch_size):
                 if idx > len(all_files) - 1:
                     idx = random.randrange(0, len(all_files))
                 audio_vector = np.load(all_files[idx])
-                if audio_vector.shape[0] > sample_len + sample_offset:
-                    audio_vector = audio_vector[sample_offset:sample_len+sample_offset]
+
+                if iteration > 1 and audio_vector.shape[0] > sample_offset + sample_len:
+                    audio_vector = audio_vector[sample_offset:sample_offset+sample_len]
+                elif audio_vector.shape[0] > sample_len + default_offset:
+                    audio_vector = audio_vector[default_offset:sample_len + default_offset]
+
                 audio_vector = audio_vector.tolist()
                 one_hot = q_to_one_hot(audio_vector, input_dim)
                 one_hot = one_hot.astype(np.uint8)
@@ -91,20 +98,29 @@ def train_generator(train_batch_size, input_dim, data_dir, sample_len, sample_of
 
             yield x_batch, y_batch
 
-def valid_generator(valid_batch_size, input_dim, valid_data_dir, sample_len, sample_offset):
+        if iteration == 10:
+            iteration = 0
+
+def valid_generator(valid_batch_size, input_dim, valid_data_dir, sample_len, default_offset):
     # VCTK -> 44257 files
     all_files = glob(os.path.join(valid_data_dir, '*npy'))
-
+    iteration = 0
     while True:
         random.shuffle(all_files)
+        iteration += 1
+        sample_offset = 0.5 * iteration * sample_len
         for start_idx in range(0, len(all_files), valid_batch_size):
             x_batch, y_batch = [], []
             for idx in range(start_idx, start_idx + valid_batch_size):
                 if idx > len(all_files) - 1:
                     idx = random.randrange(0, len(all_files))
                 audio_vector = np.load(all_files[idx])
-                if audio_vector.shape[0] > sample_len + sample_offset:
-                    audio_vector = audio_vector[:sample_len+sample_offset]
+
+                if iteration > 1 and audio_vector.shape[0] > sample_offset + sample_len:
+                    audio_vector = audio_vector[sample_offset:sample_offset+sample_len]
+                elif audio_vector.shape[0] > sample_len + default_offset:
+                    audio_vector = audio_vector[default_offset:sample_len + default_offset]
+
                 audio_vector = audio_vector.tolist()
                 one_hot = q_to_one_hot(audio_vector, input_dim)
                 one_hot = one_hot.astype(np.uint8)
@@ -119,6 +135,9 @@ def valid_generator(valid_batch_size, input_dim, valid_data_dir, sample_len, sam
             y_batch = np.asarray(y_batch)
 
             yield x_batch, y_batch
+
+        if iteration == 10:
+            iteration = 0
 
 def load_generator(all_files):
     for file in all_files:
