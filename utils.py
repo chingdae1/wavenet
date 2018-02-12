@@ -179,28 +179,18 @@ def sample(preds, temperature=1):
     probas = np.random.multinomial(1, normalize_preds, 1)
     return np.argmax(probas)
 
-def save_new_wav(quantized, orig, newname): # just to check raw audio quantization
-    amp = 32000
-    origwav = wave.open(orig, 'rb') # original audio
-    new = wave.open(newname, 'wb') # quantized audio
-    new.setparams(origwav.getparams())
-    for q in quantized:
-        new.writeframes(struct.pack('h', int(q*amp/2)))
-    new.close()
-
-def onehot_to_wave(data, orig, savename, dim): # change onehot data into audio file
+def onehot_to_wave(data, dim): # change onehot data into audio file
+    '''
+    ref: "Mu-Law Encoding in MATLAB"
+    (http://digitalsoundandmusic.com/download/matlabexercises/Mu_Law_Encoding_in_MATLAB.pdf)
+    '''
     wav_array = []
     mu = dim - 1 # 255
     for d in data[0]:
         ind = np.argmax(d)
         m = ind * (2 / mu) - 1
         o = np.sign(m) * ((((mu+1)**abs(m))-1) / mu) # mu-law expansion
-        '''
-        ref: "Mu-Law Encoding in MATLAB"
-        (http://digitalsoundandmusic.com/download/matlabexercises/Mu_Law_Encoding_in_MATLAB.pdf)
-        '''
         wav_array.append(o)
-    save_new_wav(wav_array, orig, savename)
 
     return wav_array
 
