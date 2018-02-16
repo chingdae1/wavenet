@@ -11,7 +11,7 @@ sample_len = 30000
 input_dim = 256
 new_wave_name = './generation/30000_51_p227_03'
 audio_file = 'p227_003'
-seed_audio_path = '../VCTK_audio_vector/' + audio_file +'.npy'
+seed_audio_path = '../VCTK_audio_vector/' + audio_file + '.npy'
 weight_path = './log_and_weight/30000_4_non_offset.hdf5'
 dilation_factor = [1,2,4,8,16,32,64,128,256,512,
                    1,2,4,8,16,32,64,128,256,512,
