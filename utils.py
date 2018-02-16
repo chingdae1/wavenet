@@ -169,7 +169,7 @@ def make_valid_set(data_dir):
     all_files = all_files[:len(all_files)//10]
 
     for file in all_files:
-        os.system('mv ' + file + ' /home/ubuntu/VCTK_valid_vector')
+        os.system('mv ' + file + ' /home/ubuntu/laughter_valid_vector')
 
 # multinomial sampling for generation
 def sample(preds, temperature=1):
@@ -217,8 +217,11 @@ if __name__ == '__main__':
     # make_valid_set(data_dir)
     # print('make valid set done.')
 
-    data_dir = '../laughter_normalized/'
-    save_wav_to_arr(data_dir)
+    # data_dir = '../laughter_normalized/'
+    # save_wav_to_arr(data_dir)
+
+    data_dir = '../laughter_audio_vector/'
+    make_valid_set(data_dir)
 
 
 '''
