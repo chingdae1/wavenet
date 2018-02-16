@@ -152,7 +152,7 @@ def load_generator(all_files):
 def save_wav_to_arr(data_dir):
     # VCTK -> 44257 files
     all_files = glob(os.path.join(data_dir, '*wav'))
-    output_dir = '../VCTK_audio_vector/'
+    output_dir = '../laughter_audio_vector/'
 
     for file_name, audio_vector in load_generator(all_files):
         np.save(output_dir + file_name, audio_vector)
@@ -195,7 +195,7 @@ def onehot_to_wave(data, dim): # change onehot data into audio file
     return wav_array
 
 if __name__ == '__main__':
-    data_dir = '../down_VCTK/'
+    # data_dir = '../down_VCTK/'
 
     # data_dir = './down_VCTK/'
 
@@ -216,6 +216,9 @@ if __name__ == '__main__':
     # data_dir = '../VCTK_audio_vector/'
     # make_valid_set(data_dir)
     # print('make valid set done.')
+
+    data_dir = '../laughter_normalized/'
+    save_wav_to_arr(data_dir)
 
 
 '''
