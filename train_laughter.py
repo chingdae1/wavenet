@@ -18,23 +18,34 @@ dilation_factor = [1,2,4,8,16,32,64,128,256,512,
 model = build_model(sample_len, dilation_factor)
 
 # load weight to re-train
-# model.load_weights('./log_and_weight/30000_4_non_offset.hdf5')
+model.load_weights('./laughter_wavenet_weight.hdf5')
 
 model.compile(optimizer='adam',
               loss='categorical_crossentropy',
               metrics=['categorical_accuracy'])
 
-callbacks = [EarlyStopping(monitor='val_loss',
-                           patience=4,
-                           min_delta=0.00001,
-                           mode='min'),
-             ReduceLROnPlateau(monitor='val_loss',
+# callbacks = [EarlyStopping(monitor='val_loss',
+#                            patience=4,
+#                            min_delta=0.00001,
+#                            mode='min'),
+#              ReduceLROnPlateau(monitor='val_loss',
+#                                factor=0.1,
+#                                patience=3,
+#                                epsilon=0.00001,
+#                                mode='min'),
+#              ModelCheckpoint(monitor='val_loss',
+#                              filepath="./laughter_wavenet_weight.hdf5",
+#                              save_best_only=True,
+#                              save_weights_only=True,
+#                              mode='min')]
+
+callbacks = [ReduceLROnPlateau(monitor='val_loss',
                                factor=0.1,
                                patience=3,
                                epsilon=0.00001,
                                mode='min'),
              ModelCheckpoint(monitor='val_loss',
-                             filepath="./wavenet_weight.hdf5",
+                             filepath="./laughter_wavenet_weight.hdf5",
                              save_best_only=True,
                              save_weights_only=True,
                              mode='min')]
