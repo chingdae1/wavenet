@@ -203,8 +203,8 @@ if __name__ == '__main__':
     # make_valid_set(data_dir)
     # print('make valid set done.')
 
-    # data_dir = '../laughter_normalized/'
-    # save_wav_to_arr(data_dir)
+    data_dir = '../laughter_normalized/'
+    save_wav_to_arr(data_dir)
 
     data_dir = '../laughter_audio_vector/'
     make_valid_set(data_dir)
