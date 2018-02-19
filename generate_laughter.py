@@ -10,11 +10,11 @@ log 하고 weight 파일 이름 바꿔서 log_and_weight 에 옮겨주고
 그리고 나서 아래 파라미터 이름 정해주고 돌릴 것.
 '''
 sr = 16000
-sec = 4
+sec = 2
 sample_len = 16000
 input_dim = 256
-new_wave_name = './generation/laughter_16000'
-audio_file = '55_16000'
+new_wave_name = './generation/laughter_ac21_50_172000'
+audio_file = '50_172000'
 seed_audio_path = '../laughter_audio_vector/' + audio_file + '.npy'
 weight_path = './laughter_wavenet_weight.hdf5'
 dilation_factor = [1,2,4,8,16,32,64,128,256,512,
@@ -43,7 +43,7 @@ for i in range(generation_step):
     sampled_onehot[0][0][sampled] = 1  # make the sample into onehot
     generated_sample = np.append(generated_sample, sampled_onehot, axis=1)  # append generated sample
     pred_seed = generated_sample[0][i + 1:i + 1 + sample_len]  # make new seed as generation input
-    print('generated %ith sample' % (i + 1), end='\r')
+    print('generated %ith sample ==> %i' % ((i + 1), sampled), end='\r')
 
 # Save generated samples as a flie
 with open(new_wave_name+'.pkl', 'wb') as f:

@@ -9,8 +9,8 @@ sample_len = 16000
 # default_offset = 5000
 epoch = 50
 batch_size = 8
-train_step = (1028//batch_size) + 1
-valid_step = (114// batch_size) + 1
+train_step = (908//batch_size) + 1
+valid_step = (100// batch_size) + 1
 dilation_factor = [1,2,4,8,16,32,64,128,256,512,
                    1,2,4,8,16,32,64,128,256,512,
                    1,2,4,8,16,32,64,128,256,512]
@@ -18,7 +18,7 @@ dilation_factor = [1,2,4,8,16,32,64,128,256,512,
 model = build_model(sample_len, dilation_factor)
 
 # load weight to re-train
-model.load_weights('./laughter_wavenet_weight.hdf5')
+# model.load_weights('./laughter_wavenet_weight.hdf5')
 
 model.compile(optimizer='adam',
               loss='categorical_crossentropy',
