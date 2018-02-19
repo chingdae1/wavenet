@@ -20,7 +20,7 @@ dilation_factor = [1,2,4,8,16,32,64,128,256,512,
 model = build_model(sample_len, dilation_factor)
 
 # load weight to re-train
-# model.load_weights('./laughter_wavenet_weight.hdf5')
+model.load_weights('./laughter_wavenet_weight.hdf5')
 
 model.compile(optimizer='adam',
               loss='categorical_crossentropy',
