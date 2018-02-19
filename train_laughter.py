@@ -1,13 +1,15 @@
 from utils_laughter import train_generator, valid_generator
 from wavenet import build_model
 from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
-
+'''
+model check point monitor loss로 바꿔보자
+'''
 data_dir = '../laughter_audio_vector/'
 valid_data_dir = '../laughter_valid_vector/'
 input_dim = 256
 sample_len = 16000
 # default_offset = 5000
-epoch = 50
+epoch = 300
 batch_size = 8
 train_step = (908//batch_size) + 1
 valid_step = (100// batch_size) + 1
@@ -39,7 +41,7 @@ model.compile(optimizer='adam',
 #                              save_weights_only=True,
 #                              mode='min')]
 
-callbacks = [ReduceLROnPlateau(monitor='val_loss',
+callbacks = [ReduceLROnPlateau(monitor='loss',
                                factor=0.1,
                                patience=3,
                                epsilon=0.00001,
