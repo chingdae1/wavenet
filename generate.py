@@ -65,6 +65,7 @@ for i in range(generation_step):
             impulse_idx = 0
         else:
             impulse_idx += 1
+        equal_cnt = 0
 
     print('generated %ith sample ==> %i (equal_cnt = %i)' % ((i + 1), sampled, equal_cnt), end='\r')
 

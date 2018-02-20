@@ -25,7 +25,7 @@ impulse = {0: './impulse/impulse.wav'}
 generated_sample = np.load(seed_audio_path)
 generated_sample = generated_sample.tolist()
 generated_sample = q_to_one_hot(generated_sample, input_dim).astype(np.uint8)
-generated_sample = generated_sample[generated_sample.shape[0]-30000:generated_sample.shape[0]]
+generated_sample = generated_sample[generated_sample.shape[0]-sample_len:generated_sample.shape[0]]
 # sample_list = []
 # sample_list.append(generated_sample)
 # sample_list = pad_sequences(sample_list, maxlen=sample_len, padding='post')
@@ -66,6 +66,7 @@ for i in range(generation_step):
             impulse_idx = 0
         else:
             impulse_idx += 1
+        equal_cnt = 0
 
     print('generated %ith sample ==> %i (equal_cnt = %i)' % ((i + 1), sampled, equal_cnt), end='\r')
 
