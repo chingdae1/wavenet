@@ -13,6 +13,9 @@ new_wave_name = './generation/30000_51_p225_021'
 audio_file = 'p225_021'
 seed_audio_path = '../VCTK_audio_vector/' + audio_file + '.npy'
 weight_path = './log_and_weight/30000_4_non_offset.hdf5'
+seed_start = 80000
+seed_end = seed_start + sample_len
+
 dilation_factor = [1,2,4,8,16,32,64,128,256,512,
                    1,2,4,8,16,32,64,128,256,512,
                    1,2,4,8,16,32,64,128,256,512]
@@ -21,7 +24,7 @@ impulse = {0: './impulse/impulse_VCTK.wav'}
 generated_sample = np.load(seed_audio_path)
 generated_sample = generated_sample.tolist()
 generated_sample = q_to_one_hot(generated_sample, input_dim).astype(np.uint8)
-generated_sample = generated_sample[generated_sample.shape[0]-30000:generated_sample.shape[0]]
+generated_sample = generated_sample[seed_start:seed_end]
 # sample_list = []
 # sample_list.append(generated_sample)
 # sample_list = pad_sequences(sample_list, maxlen=sample_len, padding='post')
