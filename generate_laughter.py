@@ -25,10 +25,11 @@ impulse = {0: './impulse/impulse.wav'}
 generated_sample = np.load(seed_audio_path)
 generated_sample = generated_sample.tolist()
 generated_sample = q_to_one_hot(generated_sample, input_dim).astype(np.uint8)
-sample_list = []
-sample_list.append(generated_sample)
-sample_list = pad_sequences(sample_list, maxlen=sample_len, padding='post')
-generated_sample = sample_list[0]
+generated_sample = generated_sample[generated_sample.shape[0]-30000:generated_sample.shape[0]]
+# sample_list = []
+# sample_list.append(generated_sample)
+# sample_list = pad_sequences(sample_list, maxlen=sample_len, padding='post')
+# generated_sample = sample_list[0]
 generated_sample = np.reshape(generated_sample, (1, sample_len, input_dim))
 pred_seed = np.reshape(generated_sample, (-1, input_dim))
 
@@ -48,7 +49,7 @@ for i in range(generation_step):
         equal_cnt += 1
     else:
         equal_cnt = 0
-
+    prev_sample = sampled
     sampled_onehot = np.zeros([1, 1, input_dim])
     sampled_onehot[0][0][sampled] = 1  # make the sample into onehot
     generated_sample = np.append(generated_sample, sampled_onehot, axis=1)  # append generated sample
