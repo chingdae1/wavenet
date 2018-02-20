@@ -66,7 +66,7 @@ for i in range(generation_step):
         else:
             impulse_idx += 1
 
-    print('generated %ith sample' % (i + 1), end='\r')
+    print('generated %ith sample ==> %i (equal_cnt = %i)' % ((i + 1), sampled, equal_cnt), end='\r')
 
 # Save generated samples as a flie
 with open(new_wave_name+'.pkl', 'wb') as f:
