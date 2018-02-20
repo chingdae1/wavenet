@@ -60,7 +60,7 @@ for i in range(generation_step):
         impulse_audio = impulse_audio[:1000]
         impulse_audio = q_to_one_hot(impulse_audio, input_dim)
         for j in range(1000):
-            pred_seed[j+15000] = impulse_audio[j]
+            pred_seed[sample_len - 1000 + j] = impulse_audio[j]
         print('Inject impulse.')
         if impulse_idx == len(impulse) - 1:
             impulse_idx = 0
